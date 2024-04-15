@@ -1,4 +1,4 @@
-@echo off
+@echo on
 
 ::Get todays date and split in to day,month and year vars
 for /f "tokens=2 delims==" %%G in ('wmic os get localdatetime /value') do set currdate=%%G
@@ -17,24 +17,28 @@ call :diffdays "%curryear%-%currmonth%-%currday%" "%expyear%-%expmonth%-%expday%
 set daydiff=%diff_day_of_year%
 
 :: Show 1 day / x day's
-if /i "%daydiff%" EQU "0" goto :DAYDIFF
-if /i "%daydiff%" EQU "1" goto :1DAYDIFF
-if /i "%daydiff%" GEQ "2" goto :DAYDIFF
+if /i %daydiff% LEQ 0 goto :DISPLAYEXPIRED
+if /i %daydiff% EQU 1 goto :1DAYDIFF
+goto :DAYDIFF
 
 :1DAYDIFF
 :: Show formatted data to user in a readable format
 set dayText="%daydiff% day"
-goto :Display
+goto :DISPLAY
 
 :DAYDIFF
 :: Show formatted data to user in a readable format
 set dayText="%daydiff% days"
-goto :Display
+goto :DISPLAY
 
-:Display
-if /i "%daydiff%" GEQ exit
-powershell -executionpolicy bypass -Command .\ShowMessageBox.ps1 "'Your password will expire in %dayText%. Please press CTRL-ALT-DELETE (Or in AWS click View > Send CTRL-ALT-DELETE) and then click Change a Password.'" "'Password Expiration'" "'Warning'"
+:DISPLAY
+if /i %daydiff% GEQ 7 exit
+powershell -executionpolicy bypass -Command .\ShowMessageBox.ps1 "'Your password will expire in %dayText%. Please press CTRL-ALT-DELETE (Or in AWS click View > Send CTRL-ALT-DELETE) and then click Change a Password.'" "'Password Expiring Soon'" "'Warning'"
+goto :EOF
 
+:DISPLAYEXPIRED
+powershell -executionpolicy bypass -Command .\ShowMessageBox.ps1 "'Your password has expired. Failure to not change your password will result in you being unable to login. Please press CTRL-ALT-DELETE (Or in AWS click View > Send CTRL-ALT-DELETE) and then click Change a Password.'" "'Password Expired'" "'Error'"
+goto :EOF
 
 :diffdays
 set start_date=%~1
