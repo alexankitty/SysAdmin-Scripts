@@ -11,6 +11,4 @@ REM Lifted from https://stackoverflow.com/questions/25648155/windows-command-lin
         wmic datafile where name^="%file:\=\\%" get Version /value 
     ') do set "vers=%%a"
 
-    echo(%file% = %vers% 
-
-    endlocal
+    endlocal & set "vers=%vers%"
