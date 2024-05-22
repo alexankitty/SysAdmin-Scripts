@@ -1,3 +1,4 @@
+REM Lifted from https://stackoverflow.com/questions/25648155/windows-command-line-to-read-version-info-of-an-executable-file created by MC ND
 @echo off
     setlocal enableextensions
 
