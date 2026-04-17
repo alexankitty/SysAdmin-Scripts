@@ -1,0 +1,10 @@
+[
+    {
+        "EWA": {
+            "OU": "OU=New City\\, NS,OU=Location,DC=example,DC=com",
+            "City": "New City",
+            "State": "New State",
+            "Country": "United States"
+        }        
+    }
+]
