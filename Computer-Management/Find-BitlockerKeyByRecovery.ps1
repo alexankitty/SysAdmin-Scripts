@@ -86,12 +86,17 @@ if (-not (Get-Module -ListAvailable -Name ActiveDirectory))
 
 $dnpath = $(convert-DNFormat $OU)
 
+Write-Host "Grabbing computers from AD."
 $candidate_computers = Get-ADComputer -searchbase $dnpath -Filter 'ObjectClass -eq "computer"'
 $success = $false
 
+Write-Host "Checking Recovery IDs"
+$i = 0
+
 foreach($computer in $candidate_computers)
 {
-
+    $percent = [math]::floor(($i / $candidate_computers.Length) * 100)
+    Write-Progress -Activity "Search in Progress" -Status "$percent% Complete:" -PercentComplete $percent
     $keys = get-ADComputerRecoveryKeys $computer
     foreach($key in $keys){
         if($key.RecoveryId -like "*$recovery_id*"){
@@ -99,6 +104,7 @@ foreach($computer in $candidate_computers)
             $success = $true
         }
     }
+    $i++
 }
 
 if( -not $success){
